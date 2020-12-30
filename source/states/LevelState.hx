@@ -143,6 +143,7 @@ class LevelState extends FlxState {
 	}
 
 	public function playerTouchEnemy(player:Player, enemy:Enemy) {
+		FlxG.camera.shake(0.01, 0.1);
 		if (player.health > 0) {
 			player.kill();
 		} else {
