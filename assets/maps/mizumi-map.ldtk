@@ -13,7 +13,7 @@
 	"defaultGridSize": 16,
 	"bgColor": "#7F8093",
 	"defaultLevelBgColor": "#7F8093",
-	"nextUid": 13,
+	"nextUid": 16,
 	"minifyJson": false,
 	"exportTiled": true,
 	"worldLayout": "Free",
@@ -21,6 +21,23 @@
 	"worldGridHeight": 256,
 	"defs": {
 		"layers": [
+			{
+				"__type": "Entities",
+				"identifier": "Goal",
+				"type": "Entities",
+				"uid": 13,
+				"gridSize": 16,
+				"displayOpacity": 1,
+				"pxOffsetX": 0,
+				"pxOffsetY": 0,
+				"intGridValues": [{ "identifier": null, "color": "#000000" }],
+				"autoTilesetDefUid": null,
+				"autoRuleGroups": [],
+				"autoSourceLayerDefUid": null,
+				"tilesetDefUid": null,
+				"tilePivotX": 0,
+				"tilePivotY": 0
+			},
 			{
 				"__type": "Entities",
 				"identifier": "Player",
@@ -177,6 +194,23 @@
 						"defaultOverride": null
 					}
 				]
+			},
+			{
+				"identifier": "Goal",
+				"uid": 14,
+				"width": 16,
+				"height": 16,
+				"color": "#94D9B3",
+				"renderMode": "Rectangle",
+				"showName": true,
+				"tilesetId": null,
+				"tileId": null,
+				"tileRenderMode": "Stretch",
+				"maxPerLevel": 0,
+				"limitBehavior": "DiscardOldOnes",
+				"pivotX": 0,
+				"pivotY": 0,
+				"fieldDefs": []
 			}
 		],
 		"tilesets": [
@@ -210,6 +244,27 @@
 			"__bgColor": "#7F8093",
 			"bgColor": null,
 			"layerInstances": [
+				{
+					"__identifier": "Goal",
+					"__type": "Entities",
+					"__cWid": 82,
+					"__cHei": 23,
+					"__gridSize": 16,
+					"__opacity": 1,
+					"__pxTotalOffsetX": 0,
+					"__pxTotalOffsetY": 0,
+					"__tilesetDefUid": null,
+					"__tilesetRelPath": null,
+					"levelId": 0,
+					"layerDefUid": 13,
+					"pxOffsetX": 0,
+					"pxOffsetY": 0,
+					"intGrid": [],
+					"autoLayerTiles": [],
+					"seed": 8767648,
+					"gridTiles": [],
+					"entityInstances": [{ "__identifier": "Goal", "__grid": [75,10], "__tile": null, "defUid": 14, "px": [1200,160], "fieldInstances": [] }]
+				},
 				{
 					"__identifier": "Player",
 					"__type": "Entities",

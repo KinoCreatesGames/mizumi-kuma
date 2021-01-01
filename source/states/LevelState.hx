@@ -1,13 +1,12 @@
 package states;
 
+import states.WinSubState;
 import Types.Monster;
 import flixel.FlxObject;
-import flixel.util.FlxCollision;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import openfl.utils.AssetCache;
 import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.tile.FlxTilemap;
-import flixel.addons.editors.tiled.TiledTile;
 import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectLayer;
@@ -18,6 +17,7 @@ class LevelState extends FlxState {
 	public var enemyGrp:FlxTypedGroup<FlxSprite>;
 	public var playerGrp:FlxTypedGroup<FlxSprite>;
 	public var tileGrp:FlxTypedGroup<FlxSprite>;
+	public var goalGrp:FlxTypedGroup<FlxSprite>;
 	public var decorationGrp:FlxTypedGroup<FlxTilemap>;
 	// We need to create this because a TiledMap is just there to hold data
 	public var level:FlxTilemap;
@@ -34,16 +34,20 @@ class LevelState extends FlxState {
 		this.map = map;
 		final playerLayer:TiledObjectLayer = cast(map.getLayer("Player"));
 		final enemiesLayer:TiledObjectLayer = cast(map.getLayer('Enemies'));
+		final goalsLayer:TiledObjectLayer = cast(map.getLayer('Goal'));
 		final tileLayer:TiledTileLayer = cast(map.getLayer('Floor'));
+
 		level = new FlxTilemap();
 		decorationGrp = new FlxTypedGroup<FlxTilemap>();
 		tileGrp = new FlxTypedGroup<FlxSprite>();
 		enemyGrp = new FlxTypedGroup<FlxSprite>();
 		playerGrp = new FlxTypedGroup<FlxSprite>();
+		goalGrp = new FlxTypedGroup<FlxSprite>();
 
 		add(decorationGrp);
 		add(enemyGrp);
 		add(playerGrp);
+		add(goalGrp);
 		add(tileGrp);
 
 		// trace(tileLayer, tileLayer.tileArray, tileLayer.csvData, 'trace');
@@ -51,6 +55,7 @@ class LevelState extends FlxState {
 		createLevelMap(tileLayer);
 		playerLayer.objects.iter(placePlayer);
 		enemiesLayer.objects.iter(placeEnemies);
+		goalsLayer.objects.iter(placeGoal);
 	}
 
 	// Gets the Tiled Image Data from the level layer and creates a level
@@ -93,6 +98,13 @@ class LevelState extends FlxState {
 		};
 	}
 
+	public function placeGoal(tObj:TiledObject) {
+		var goal = new FlxSprite(tObj.x, tObj.y);
+		goal.makeGraphic(tObj.width, tObj.height, FlxColor.WHITE);
+
+		goalGrp.add(goal);
+	}
+
 	public function placePlayer(tObj:TiledObject) {
 		var player = new Player(tObj.x, tObj.y);
 		player.makeGraphic(tObj.width, tObj.height, FlxColor.BLUE);
@@ -126,7 +138,21 @@ class LevelState extends FlxState {
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
+		updatePause(elapsed);
+		updateGameOver(elapsed);
 		updateCollisions(elapsed);
+	}
+
+	public function updatePause(elapsed:Float) {
+		if (FlxG.keys.anyJustPressed([ESCAPE])) {
+			openSubState(new PauseSubState());
+		}
+	}
+
+	public function updateGameOver(elapsed:Float) {
+		if (!player.alive) {
+			openSubState(new GameOverSubState());
+		}
 	}
 
 	public function updateCollisions(elapsed:Float) {
@@ -140,6 +166,7 @@ class LevelState extends FlxState {
 		};
 
 		FlxG.overlap(player, enemyGrp, playerTouchEnemy);
+		FlxG.overlap(player, goalGrp, playerTouchGoal);
 	}
 
 	public function playerTouchEnemy(player:Player, enemy:Enemy) {
@@ -149,6 +176,16 @@ class LevelState extends FlxState {
 		} else {
 			player.health -= 1;
 		}
+	}
+
+	/**
+	 * This method will be overriden with the goal substate
+	 * before moving to the next stage.
+	 * @param player
+	 * @param goal
+	 */
+	public function playerTouchGoal(player:Player, goal:FlxSprite) {
+		// Win Current Level & Display Win Screen
 	}
 
 	public function enemyCollisions() {
