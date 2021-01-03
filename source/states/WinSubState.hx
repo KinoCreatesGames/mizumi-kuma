@@ -25,6 +25,7 @@ class WinSubState extends FlxSubState {
 		var y = 40;
 		var nextButton = new FlxButton(0, 0, Globals.TEXT_LEVEL_NEXT);
 		nextButton.screenCenter();
+		nextButton.y += y;
 		add(nextButton);
 	}
 
