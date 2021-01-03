@@ -6,4 +6,6 @@ class Globals {
 	public static inline var TEXT_LEVEL_NEXT = 'Next';
 	public static inline var TEXT_LEVEL_WIN = 'Congratulations!!';
 	public static inline var CMD_TIME_SCALE = 0.015;
+	public static inline var PLAYER_HEALTH_CAP = 3;
+	public static inline var PLAYER_BULLET_CD:Float = 0.15;
 }

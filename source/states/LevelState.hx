@@ -1,5 +1,6 @@
 package states;
 
+import ui.PlayerHUD;
 import states.WinSubState;
 import Types.Monster;
 import flixel.FlxObject;
@@ -16,6 +17,7 @@ class LevelState extends FlxState {
 	public var map:TiledMap;
 	public var enemyGrp:FlxTypedGroup<FlxSprite>;
 	public var playerGrp:FlxTypedGroup<FlxSprite>;
+	public var playerBulletGrp:FlxTypedGroup<Bullet>;
 	public var tileGrp:FlxTypedGroup<FlxSprite>;
 	public var goalGrp:FlxTypedGroup<FlxSprite>;
 	public var decorationGrp:FlxTypedGroup<FlxTilemap>;
@@ -42,11 +44,13 @@ class LevelState extends FlxState {
 		tileGrp = new FlxTypedGroup<FlxSprite>();
 		enemyGrp = new FlxTypedGroup<FlxSprite>();
 		playerGrp = new FlxTypedGroup<FlxSprite>();
+		playerBulletGrp = new FlxTypedGroup<Bullet>(50);
 		goalGrp = new FlxTypedGroup<FlxSprite>();
 
 		add(decorationGrp);
 		add(enemyGrp);
 		add(playerGrp);
+		add(playerBulletGrp);
 		add(goalGrp);
 		add(tileGrp);
 
@@ -106,12 +110,18 @@ class LevelState extends FlxState {
 	}
 
 	public function placePlayer(tObj:TiledObject) {
-		var player = new Player(tObj.x, tObj.y);
+		var player = new Player(tObj.x, tObj.y, playerBulletGrp);
 		player.makeGraphic(tObj.width, tObj.height, FlxColor.BLUE);
 
 		// adjust player hitbox so he doesn't collide with tiles as easily
 		this.player = player;
+		createPlayerHUD(new FlxPoint(0, 0), this.player);
 		playerGrp.add(player);
+	}
+
+	public function createPlayerHUD(position:FlxPoint, player:Player) {
+		var playerHUD = new PlayerHUD(position.x, position.y, player);
+		add(playerHUD);
 	}
 
 	public function placeEnemies(tObj:TiledObject) {
@@ -132,7 +142,7 @@ class LevelState extends FlxState {
 			]
 		};
 		var enemy = new Enemy(tObj.x, tObj.y, monsterData);
-		enemy.makeGraphic(tObj.width, tObj.height, FlxColor.RED);
+		// enemy.makeGraphic(tObj.width, tObj.height, FlxColor.RED);
 		enemyGrp.add(enemy);
 	}
 
@@ -167,11 +177,20 @@ class LevelState extends FlxState {
 
 		FlxG.overlap(player, enemyGrp, playerTouchEnemy);
 		FlxG.overlap(player, goalGrp, playerTouchGoal);
+		FlxG.overlap(playerBulletGrp, enemyGrp, playerBulletTouchEnemy);
+	}
+
+	public function playerBulletTouchEnemy(playerBullet:Bullet, enemy:Enemy) {
+		if (enemy.health <= 0) {
+			enemy.kill();
+		} else {
+			enemy.health -= 1;
+		}
 	}
 
 	public function playerTouchEnemy(player:Player, enemy:Enemy) {
 		FlxG.camera.shake(0.01, 0.1);
-		if (player.health > 0) {
+		if (player.health <= 0) {
 			player.kill();
 		} else {
 			player.health -= 1;
@@ -194,7 +213,7 @@ class LevelState extends FlxState {
 	}
 
 	public function enemyTouchPlayer(enemy:Enemy, player:Player) {
-		if (enemy.health > 0) {
+		if (enemy.health <= 0) {
 			enemy.kill();
 		} else {
 			enemy.health -= 1;

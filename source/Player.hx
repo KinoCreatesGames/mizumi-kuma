@@ -4,23 +4,57 @@ class Player extends Entity {
 	public static inline var SPEED:Float = 640;
 	public static inline var JUMP_SPEED:Float = 600;
 	public static inline var JUMP_CD:Float = 0.10;
+	public static inline var BULLET_CD:Float = 0.15;
+
+	public var firePoint:FlxPoint;
 
 	private var internalJumpCd:Float = 0.10;
 
+	public var fireCD:Float;
 	public var isJumping:Bool;
+	public var bulletGrp:FlxTypedGroup<Bullet>;
 
-	public function new(x:Float, y:Float) {
+	public function new(x:Float, y:Float, bulletGrp:FlxTypedGroup<Bullet>) {
 		super(x, y);
+		health = Globals.PLAYER_HEALTH_CAP;
 		drag.x = drag.y = 640;
 		acceleration.y = 600;
 		isJumping = false;
+		this.bulletGrp = bulletGrp;
+		fireCD = BULLET_CD;
 		setSize(8, 8);
 		// offset.set(4, );
 	}
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
+		updateFire(elapsed);
 		updateMovement(elapsed);
+	}
+
+	public function updateFire(elapsed:Float) {
+		var firing = false;
+		firing = FlxG.keys.anyPressed([Z]);
+
+		if (firing && fireCD <= 0) {
+			fireCD = BULLET_CD;
+
+			var xOffset = 4;
+			this.firePoint = new FlxPoint(8 + x, y);
+			var bullet = null;
+
+			var fireVec = new FlxVector(1, 0);
+			if (bulletGrp.length < 50) {
+				bullet = new Bullet();
+				bulletGrp.add(bullet);
+			} else {
+				bullet = bulletGrp.getFirstDead();
+				bullet.revive();
+			}
+			bullet.setPosition(this.firePoint.x + xOffset, this.firePoint.y);
+			bullet.fire(fireVec);
+		}
+		fireCD -= elapsed;
 	}
 
 	public function updateMovement(elapsed:Float) {
@@ -50,7 +84,7 @@ class Player extends Entity {
 		// Because we're using acceleration above to handle gravity insteada of velocity
 		// We need to then use acceleration in the x  axis to account for change in speed
 		// overtime for jumps and for y we use velocity because a jump is a burst of speed
-		trace(y, acceleration.y, velocity.y);
+		// trace(y, acceleration.y, velocity.y);
 		acceleration.x = 0;
 		// Handle Actual Movement
 		if (up || down || left || right) {

@@ -2,6 +2,7 @@ package states;
 
 class PauseSubState extends FlxSubState {
 	override public function create() {
+		FlxG.mouse.visible = true;
 		var pauseText = new FlxText(0, 0, -1, 'Pause', 32);
 		pauseText.screenCenter();
 		add(pauseText);

@@ -5,6 +5,7 @@ class WinSubState extends FlxSubState {
 
 	public function new(?bgColor:FlxColor, nextLevel) {
 		super(bgColor);
+		FlxG.mouse.visible = true;
 		this.nextLevel = nextLevel;
 	}
 

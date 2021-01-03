@@ -2,6 +2,7 @@ package states;
 
 class GameOverSubState extends FlxSubState {
 	override public function create() {
+		FlxG.mouse.visible = true;
 		var gameOverText = new FlxText(0, 0, -1, Globals.TEXT_GAME_OVER, 32);
 		gameOverText.screenCenter();
 		add(gameOverText);
