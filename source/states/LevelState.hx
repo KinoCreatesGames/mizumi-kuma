@@ -21,14 +21,20 @@ class LevelState extends FlxState {
 	public var tileGrp:FlxTypedGroup<FlxSprite>;
 	public var goalGrp:FlxTypedGroup<FlxSprite>;
 	public var decorationGrp:FlxTypedGroup<FlxTilemap>;
+	public var startPosition:FlxPoint;
 	// We need to create this because a TiledMap is just there to hold data
 	public var level:FlxTilemap;
-
+	public var levelTime:Float;
 	public var player:Player;
 
 	override public function create() {
 		super.create();
+		setLevelTime();
 		FlxG.mouse.visible = false;
+	}
+
+	public function setLevelTime() {
+		levelTime = 60.0;
 	}
 
 	public function createLevel(?levelName:String) {
@@ -39,6 +45,7 @@ class LevelState extends FlxState {
 		final goalsLayer:TiledObjectLayer = cast(map.getLayer('Goal'));
 		final tileLayer:TiledTileLayer = cast(map.getLayer('Floor'));
 
+		// Create Groups And Level
 		level = new FlxTilemap();
 		decorationGrp = new FlxTypedGroup<FlxTilemap>();
 		tileGrp = new FlxTypedGroup<FlxSprite>();
@@ -103,8 +110,8 @@ class LevelState extends FlxState {
 	}
 
 	public function placeGoal(tObj:TiledObject) {
-		var goal = new FlxSprite(tObj.x, tObj.y);
-		goal.makeGraphic(tObj.width, tObj.height, FlxColor.WHITE);
+		var goal = new Goal(tObj.x, tObj.y);
+		// goal.makeGraphic(tObj.width, tObj.height, FlxColor.WHITE);
 
 		goalGrp.add(goal);
 	}
@@ -112,15 +119,19 @@ class LevelState extends FlxState {
 	public function placePlayer(tObj:TiledObject) {
 		var player = new Player(tObj.x, tObj.y, playerBulletGrp);
 		player.makeGraphic(tObj.width, tObj.height, FlxColor.BLUE);
+		startPosition = new FlxPoint(tObj.x, tObj.y);
 
 		// adjust player hitbox so he doesn't collide with tiles as easily
 		this.player = player;
 		createPlayerHUD(new FlxPoint(0, 0), this.player);
+		// Setup Camera
+		FlxG.camera.follow(player, LOCKON, 1);
+		// FlxG.camera.setSize(420, 320);
 		playerGrp.add(player);
 	}
 
 	public function createPlayerHUD(position:FlxPoint, player:Player) {
-		var playerHUD = new PlayerHUD(position.x, position.y, player);
+		var playerHUD = new PlayerHUD(position.x, position.y, player, this);
 		add(playerHUD);
 	}
 
@@ -148,9 +159,26 @@ class LevelState extends FlxState {
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
+		updatePlayerAlive();
 		updatePause(elapsed);
 		updateGameOver(elapsed);
+		updateLevelTime(elapsed);
 		updateCollisions(elapsed);
+	}
+
+	public function updatePlayerAlive() {
+		if (player.y > FlxG.height) {
+			playerTakeDamage();
+			player.setPosition(startPosition.x, startPosition.y);
+		}
+	}
+
+	public function updateLevelTime(elapsed:Float) {
+		if (levelTime > 0) {
+			levelTime -= elapsed;
+		} else {
+			levelTime = 0;
+		}
 	}
 
 	public function updatePause(elapsed:Float) {
@@ -160,7 +188,7 @@ class LevelState extends FlxState {
 	}
 
 	public function updateGameOver(elapsed:Float) {
-		if (!player.alive) {
+		if (!player.alive || levelTime <= 0) {
 			openSubState(new GameOverSubState());
 		}
 	}
@@ -181,19 +209,26 @@ class LevelState extends FlxState {
 	}
 
 	public function playerBulletTouchEnemy(playerBullet:Bullet, enemy:Enemy) {
+		enemy.health -= 1;
 		if (enemy.health <= 0) {
 			enemy.kill();
-		} else {
-			enemy.health -= 1;
 		}
+		playerBullet.kill();
 	}
 
 	public function playerTouchEnemy(player:Player, enemy:Enemy) {
+		if (!player.isInvincble || player.health <= 0) {
+			playerTakeDamage();
+			enemyTouchPlayer(enemy, player);
+		}
+	}
+
+	public function playerTakeDamage() {
 		FlxG.camera.shake(0.01, 0.1);
+		player.health -= 1;
+		player.isInvincble = true;
 		if (player.health <= 0) {
 			player.kill();
-		} else {
-			player.health -= 1;
 		}
 	}
 
@@ -205,18 +240,18 @@ class LevelState extends FlxState {
 	 */
 	public function playerTouchGoal(player:Player, goal:FlxSprite) {
 		// Win Current Level & Display Win Screen
+		FlxG.camera.setSize(FlxG.width, FlxG.height);
 	}
 
 	public function enemyCollisions() {
 		FlxG.collide(enemyGrp, level);
-		FlxG.overlap(enemyGrp, player, enemyTouchPlayer);
+		// FlxG.overlap(enemyGrp, player, enemyTouchPlayer);
 	}
 
 	public function enemyTouchPlayer(enemy:Enemy, player:Player) {
+		enemy.health -= 1;
 		if (enemy.health <= 0) {
 			enemy.kill();
-		} else {
-			enemy.health -= 1;
 		}
 	}
 }

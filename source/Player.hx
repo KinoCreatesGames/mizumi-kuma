@@ -5,6 +5,7 @@ class Player extends Entity {
 	public static inline var JUMP_SPEED:Float = 600;
 	public static inline var JUMP_CD:Float = 0.10;
 	public static inline var BULLET_CD:Float = 0.15;
+	public static inline var INVINCIBLE_CD:Float = 2.0;
 
 	public var firePoint:FlxPoint;
 
@@ -12,6 +13,10 @@ class Player extends Entity {
 
 	public var fireCD:Float;
 	public var isJumping:Bool;
+	public var invincibleCD:Float;
+	public var isInvincble:Bool;
+	public var invincibleCount:Int;
+
 	public var bulletGrp:FlxTypedGroup<Bullet>;
 
 	public function new(x:Float, y:Float, bulletGrp:FlxTypedGroup<Bullet>) {
@@ -20,6 +25,8 @@ class Player extends Entity {
 		drag.x = drag.y = 640;
 		acceleration.y = 600;
 		isJumping = false;
+		isInvincble = false;
+		invincibleCD = INVINCIBLE_CD;
 		this.bulletGrp = bulletGrp;
 		fireCD = BULLET_CD;
 		setSize(8, 8);
@@ -28,8 +35,28 @@ class Player extends Entity {
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
+
+		updateCollision(elapsed);
 		updateFire(elapsed);
 		updateMovement(elapsed);
+	}
+
+	public function updateCollision(elapsed:Float) {
+		if (isInvincble && invincibleCD > 0) {
+			// trace('took damage updating visibility', visible);
+			invincibleCD -= elapsed;
+			invincibleCount += 1;
+			if (invincibleCount % 10 == 0) {
+				visible = !visible;
+			}
+		}
+
+		if (invincibleCD <= 0) {
+			invincibleCD = INVINCIBLE_CD;
+			invincibleCount = 0;
+			isInvincble = false;
+			visible = true;
+		}
 	}
 
 	public function updateFire(elapsed:Float) {
@@ -106,7 +133,7 @@ class Player extends Entity {
 				acceleration.x += SPEED;
 			}
 
-			this.bound();
+			// this.bound();
 		}
 	}
 }

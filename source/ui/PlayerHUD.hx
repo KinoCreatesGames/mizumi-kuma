@@ -1,19 +1,29 @@
 package ui;
 
+import flixel.util.FlxAxes;
+
 class PlayerHUD extends FlxTypedGroup<FlxSprite> {
 	public var position:FlxPoint;
 	public var player:Player;
 	public var currentHealth:Float;
 	public var healthVisual:Array<FlxSprite>;
+	public var levelTimer:FlxText;
+	public var levelState:LevelState;
 
-	public function new(x:Float, y:Float, player:Player) {
+	public function new(x:Float, y:Float, player:Player,
+			levelState:LevelState) {
 		super();
 		position = new FlxPoint(x, y);
 		this.player = player;
 		currentHealth = player.health;
 		healthVisual = [];
+		this.levelState = levelState;
+
 		// add(healthGrp);
 		create();
+		members.iter((member) -> {
+			member.scrollFactor.set(0, 0);
+		});
 	}
 
 	/**
@@ -22,7 +32,21 @@ class PlayerHUD extends FlxTypedGroup<FlxSprite> {
 	 */
 	public function create() {
 		createHealthPoints(position);
+		createLevelTimer(position);
 		createBorder(position);
+	}
+
+	/**
+	 * Shows the game time
+	 * @param position
+	 */
+	public function createLevelTimer(position:FlxPoint) {
+		var x = position.x;
+		var y = position.y;
+		var textWidth = 100;
+		levelTimer = new FlxText(x, y, textWidth, '0:00', 32);
+		levelTimer.screenCenter(FlxAxes.X);
+		add(levelTimer);
 	}
 
 	public function createHealthPoints(position:FlxPoint) {
@@ -36,13 +60,13 @@ class PlayerHUD extends FlxTypedGroup<FlxSprite> {
 			add(healthSprite);
 			x += 16 + spacing;
 		}
-		trace('Created Player HUD', healthVisual);
 	}
 
 	public function createBorder(position:FlxPoint) {}
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
+		updateLevelTimer();
 		updateHealthPoints();
 	}
 
@@ -56,6 +80,12 @@ class PlayerHUD extends FlxTypedGroup<FlxSprite> {
 			healthVisual.slice(0, val).iter(hideHealth);
 		}
 		currentHealth = player.health;
+	}
+
+	public function updateLevelTimer() {
+		var levelTime:Int = Math.ceil(levelState.levelTime);
+		var timeText = '${levelTime}';
+		levelTimer.text = timeText;
 	}
 
 	public function showHealth(health:FlxSprite) {

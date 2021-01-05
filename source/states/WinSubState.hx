@@ -18,6 +18,7 @@ class WinSubState extends FlxSubState {
 	public function createTitle() {
 		var titleText = new FlxText(0, 0, -1, Globals.TEXT_LEVEL_WIN, 32);
 		titleText.screenCenter();
+		titleText.scrollFactor.set(0, 0);
 		add(titleText);
 	}
 

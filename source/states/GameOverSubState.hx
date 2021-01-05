@@ -5,6 +5,7 @@ class GameOverSubState extends FlxSubState {
 		FlxG.mouse.visible = true;
 		var gameOverText = new FlxText(0, 0, -1, Globals.TEXT_GAME_OVER, 32);
 		gameOverText.screenCenter();
+		gameOverText.scrollFactor.set(0, 0);
 		add(gameOverText);
 
 		// Buttons

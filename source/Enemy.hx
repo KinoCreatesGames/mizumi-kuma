@@ -24,7 +24,6 @@ class Enemy extends Entity {
 
 	public function addAnimations() {
 		loadGraphic(AssetPaths.enemy__png, true, 16, 16);
-		trace('Loaded Animation');
 		setFacingFlip(FlxObject.RIGHT, false, false);
 		setFacingFlip(FlxObject.LEFT, true, false);
 		animation.add(IDLE, [0, 5], 6);

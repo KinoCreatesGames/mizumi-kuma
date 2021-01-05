@@ -5,6 +5,7 @@ class PauseSubState extends FlxSubState {
 		FlxG.mouse.visible = true;
 		var pauseText = new FlxText(0, 0, -1, 'Pause', 32);
 		pauseText.screenCenter();
+		pauseText.scrollFactor.set(0, 0);
 		add(pauseText);
 		var resumeButton = new FlxButton(0, 0, 'Resume', resumeGame);
 		resumeButton.screenCenter();

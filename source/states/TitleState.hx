@@ -22,7 +22,6 @@ class TitleState extends FlxState {
 	}
 
 	public function clickOptions() {
-		trace('Open Options');
 		// openSubState(new OptionSubState());
 	}
 }
