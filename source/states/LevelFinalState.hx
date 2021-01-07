@@ -1,21 +1,13 @@
 package states;
 
-import states.WinSubState;
-import flixel.text.FlxText;
-import flixel.FlxState;
-
-class PlayState extends LevelState {
+class LevelFinalState extends LevelState {
 	override public function create() {
 		super.create();
-		createLevel('assets/maps/mizumi-map_tiled/1_Level.tmx');
+		createLevel('');
 	}
 
 	override public function setLevelTime() {
 		levelTime = 120.0;
-	}
-
-	override public function update(elapsed:Float) {
-		super.update(elapsed);
 	}
 
 	override public function playerTouchGoal(player:Player, goal:FlxSprite) {

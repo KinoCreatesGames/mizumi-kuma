@@ -1,13 +1,9 @@
 package states;
 
-import states.WinSubState;
-import flixel.text.FlxText;
-import flixel.FlxState;
-
-class PlayState extends LevelState {
+class LevelThreeState extends LevelState {
 	override public function create() {
 		super.create();
-		createLevel('assets/maps/mizumi-map_tiled/1_Level.tmx');
+		createLevel('');
 	}
 
 	override public function setLevelTime() {
@@ -22,6 +18,6 @@ class PlayState extends LevelState {
 		// Open Next Level
 		super.playerTouchGoal(player, goal);
 		// trace(FlxG.camera.width, FlxG.camera.height);
-		openSubState(new WinSubState(null, new LevelTwoState()));
+		openSubState(new WinSubState(null, new LevelFinalState()));
 	}
 }

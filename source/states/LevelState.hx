@@ -15,7 +15,7 @@ import flixel.addons.editors.tiled.TiledMap;
 
 class LevelState extends FlxState {
 	public var map:TiledMap;
-	public var enemyGrp:FlxTypedGroup<FlxSprite>;
+	public var enemyGrp:FlxTypedGroup<Enemy>;
 	public var playerGrp:FlxTypedGroup<FlxSprite>;
 	public var playerBulletGrp:FlxTypedGroup<Bullet>;
 	public var tileGrp:FlxTypedGroup<FlxSprite>;
@@ -49,7 +49,7 @@ class LevelState extends FlxState {
 		level = new FlxTilemap();
 		decorationGrp = new FlxTypedGroup<FlxTilemap>();
 		tileGrp = new FlxTypedGroup<FlxSprite>();
-		enemyGrp = new FlxTypedGroup<FlxSprite>();
+		enemyGrp = new FlxTypedGroup<Enemy>();
 		playerGrp = new FlxTypedGroup<FlxSprite>();
 		playerBulletGrp = new FlxTypedGroup<Bullet>(50);
 		goalGrp = new FlxTypedGroup<FlxSprite>();
@@ -160,6 +160,7 @@ class LevelState extends FlxState {
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
 		updatePlayerAlive();
+		updateEnemyVision(elapsed);
 		updatePause(elapsed);
 		updateGameOver(elapsed);
 		updateLevelTime(elapsed);
@@ -171,6 +172,21 @@ class LevelState extends FlxState {
 			playerTakeDamage();
 			player.setPosition(startPosition.x, startPosition.y);
 		}
+	}
+
+	public function updateEnemyVision(elapsed:Float) {
+		enemyGrp.members.iter((member) -> {
+			if (Std.isOfType(member, Charger)) {
+				var charger:Charger = cast member;
+				charger.playerPosition = player.getMidpoint();
+				if (charger.getMidpoint()
+					.distanceTo(charger.playerPosition) < 50) {
+					charger.seesPlayer = true;
+				} else {
+					charger.seesPlayer = false;
+				}
+			}
+		});
 	}
 
 	public function updateLevelTime(elapsed:Float) {
