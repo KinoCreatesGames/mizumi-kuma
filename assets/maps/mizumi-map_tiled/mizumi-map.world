@@ -1,4 +1,9 @@
 {
-	"maps": [ { "fileName": "1_Level.tmx", "x": 0, "y": 0 }, { "fileName": "2_Level2.tmx", "x": 0, "y": 512 } ],
+	"maps": [
+		{ "fileName": "1_Level.tmx", "x": 0, "y": 0 },
+		{ "fileName": "2_Level2.tmx", "x": 0, "y": 512 },
+		{ "fileName": "3_Level3.tmx", "x": 0, "y": 960 },
+		{ "fileName": "4_Level4.tmx", "x": 0, "y": 1472 }
+	],
 	"type": "world"
 }

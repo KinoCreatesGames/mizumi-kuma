@@ -3,7 +3,7 @@ package states;
 class LevelThreeState extends LevelState {
 	override public function create() {
 		super.create();
-		createLevel('');
+		createLevel('assets/maps/mizumi-map_tiled/3_Level3.tmx');
 	}
 
 	override public function setLevelTime() {
