@@ -14,7 +14,11 @@ import flixel.addons.editors.tiled.TiledObjectLayer;
 import flixel.addons.editors.tiled.TiledMap;
 
 class LevelState extends FlxState {
+	public static inline var GRUMP_POINTS:Int = 100;
+	public static inline var CHARGER_POINTS:Int = 200;
+
 	public var map:TiledMap;
+	public var playerHUD:PlayerHUD;
 	public var enemyGrp:FlxTypedGroup<Enemy>;
 	public var playerGrp:FlxTypedGroup<FlxSprite>;
 	public var playerBulletGrp:FlxTypedGroup<Bullet>;
@@ -25,6 +29,7 @@ class LevelState extends FlxState {
 	// We need to create this because a TiledMap is just there to hold data
 	public var level:FlxTilemap;
 	public var levelTime:Float;
+	public var levelScore:Int;
 	public var player:Player;
 
 	override public function create() {
@@ -132,6 +137,7 @@ class LevelState extends FlxState {
 
 	public function createPlayerHUD(position:FlxPoint, player:Player) {
 		var playerHUD = new PlayerHUD(position.x, position.y, player, this);
+		this.playerHUD = playerHUD;
 		add(playerHUD);
 	}
 
@@ -164,6 +170,7 @@ class LevelState extends FlxState {
 		updatePause(elapsed);
 		updateGameOver(elapsed);
 		updateLevelTime(elapsed);
+
 		updateCollisions(elapsed);
 	}
 
@@ -228,8 +235,19 @@ class LevelState extends FlxState {
 		enemy.health -= 1;
 		if (enemy.health <= 0) {
 			enemy.kill();
+			updateScoreByEnemy(enemy);
 		}
 		playerBullet.kill();
+	}
+
+	public function updateScoreByEnemy(enemy:Enemy) {
+		if (Std.isOfType(enemy, Patroller)) {
+			levelScore += GRUMP_POINTS;
+		}
+
+		if (Std.isOfType(enemy, Charger)) {
+			levelScore += CHARGER_POINTS;
+		}
 	}
 
 	public function playerTouchEnemy(player:Player, enemy:Enemy) {
