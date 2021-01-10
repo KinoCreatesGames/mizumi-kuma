@@ -8,6 +8,7 @@ class PlayerHUD extends FlxTypedGroup<FlxSprite> {
 	public var currentHealth:Float;
 	public var healthVisual:Array<FlxSprite>;
 	public var levelTimer:FlxText;
+	public var highScore:FlxText;
 	public var levelScore:FlxText;
 	public var levelState:LevelState;
 
@@ -34,6 +35,7 @@ class PlayerHUD extends FlxTypedGroup<FlxSprite> {
 	public function create() {
 		createHealthPoints(position);
 		createLevelTimer(position);
+		createLevelScore(position);
 		createBorder(position);
 	}
 
@@ -55,8 +57,12 @@ class PlayerHUD extends FlxTypedGroup<FlxSprite> {
 		var x = FlxG.width - textWidth;
 		var y = position.y;
 
-		levelScore = new FlxText(x, y, textWidth, '0', 32);
+		highScore = new FlxText(x, y, textWidth, 'High Score: 0', 32);
+		y += 16;
+		levelScore = new FlxText(x, y, textWidth, 'Score: 0', 32);
+
 		add(levelScore);
+		add(highScore);
 	}
 
 	public function createHealthPoints(position:FlxPoint) {
@@ -99,7 +105,8 @@ class PlayerHUD extends FlxTypedGroup<FlxSprite> {
 	}
 
 	public function updateLevelScore() {
-		levelScore.text = '';
+		levelScore.text = 'Score: ${levelState.levelScore}';
+		highScore.text = 'High Score: ${Globals.HIGH_SCORE}';
 	}
 
 	public function showHealth(health:FlxSprite) {

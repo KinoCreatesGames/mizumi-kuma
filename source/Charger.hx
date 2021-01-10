@@ -11,6 +11,7 @@ class Charger extends Enemy {
 
 	public function new(x:Float, y:Float, data:Monster) {
 		super(x, y, data);
+		ai = new State(idle);
 		seesPlayer = false;
 		playerPosition = FlxPoint.get();
 		acceleration.y = 600;

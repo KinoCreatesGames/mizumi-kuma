@@ -158,7 +158,14 @@ class LevelState extends FlxState {
 				new FlxPoint(patrolTwo[0], patrolTwo[1])
 			]
 		};
-		var enemy = new Enemy(tObj.x, tObj.y, monsterData);
+		var enemy:Enemy = null;
+		if (Std.isOfType(enemy, Patroller)) {
+			enemy = new Patroller(tObj.x, tObj.y, monsterData);
+		}
+		if (Std.isOfType(enemy, Charger)) {
+			enemy = new Charger(tObj.x, tObj.y, monsterData);
+		}
+
 		// enemy.makeGraphic(tObj.width, tObj.height, FlxColor.RED);
 		enemyGrp.add(enemy);
 	}
@@ -202,6 +209,12 @@ class LevelState extends FlxState {
 		} else {
 			levelTime = 0;
 		}
+
+		if (levelTime <= 0) {
+			// Process Restart If Player Runs Out Of Time
+			player.health -= 1;
+			player.setPosition(startPosition.x, startPosition.y);
+		}
 	}
 
 	public function updatePause(elapsed:Float) {
@@ -211,7 +224,9 @@ class LevelState extends FlxState {
 	}
 
 	public function updateGameOver(elapsed:Float) {
-		if (!player.alive || levelTime <= 0) {
+		if (!player.alive) {
+			// Reset High Score
+			Globals.setHighScore(0);
 			openSubState(new GameOverSubState());
 		}
 	}
@@ -243,10 +258,12 @@ class LevelState extends FlxState {
 	public function updateScoreByEnemy(enemy:Enemy) {
 		if (Std.isOfType(enemy, Patroller)) {
 			levelScore += GRUMP_POINTS;
+			Globals.updateHighScore(GRUMP_POINTS);
 		}
 
 		if (Std.isOfType(enemy, Charger)) {
 			levelScore += CHARGER_POINTS;
+			Globals.updateHighScore(CHARGER_POINTS);
 		}
 	}
 
@@ -275,6 +292,9 @@ class LevelState extends FlxState {
 	public function playerTouchGoal(player:Player, goal:FlxSprite) {
 		// Win Current Level & Display Win Screen
 		FlxG.camera.setSize(FlxG.width, FlxG.height);
+		// Update High Score
+		var timeBonus = Math.floor(levelTime) * Globals.TIME_BONUS;
+		Globals.updateHighScore(timeBonus);
 	}
 
 	public function enemyCollisions() {
