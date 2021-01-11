@@ -796,7 +796,7 @@
 					"autoLayerTiles": [],
 					"seed": 9903548,
 					"gridTiles": [],
-					"entityInstances": []
+					"entityInstances": [{ "__identifier": "Goal", "__grid": [81,13], "__tile": null, "defUid": 14, "px": [1296,208], "fieldInstances": [] }]
 				},
 				{
 					"__identifier": "Player",
@@ -817,10 +817,7 @@
 					"autoLayerTiles": [],
 					"seed": 318615,
 					"gridTiles": [],
-					"entityInstances": [
-						{ "__identifier": "Player", "__grid": [2,13], "__tile": null, "defUid": 6, "px": [32,208], "fieldInstances": [{ "__identifier": "health", "__value": 3, "__type": "Int", "defUid": 7, "realEditorValues": [] }] },
-						{ "__identifier": "Goal", "__grid": [81,13], "__tile": null, "defUid": 14, "px": [1296,208], "fieldInstances": [] }
-					]
+					"entityInstances": [{ "__identifier": "Player", "__grid": [2,12], "__tile": null, "defUid": 6, "px": [32,192], "fieldInstances": [{ "__identifier": "health", "__value": 3, "__type": "Int", "defUid": 7, "realEditorValues": [] }] }]
 				},
 				{
 					"__identifier": "Enemies",
@@ -1265,7 +1262,7 @@
 					"autoLayerTiles": [],
 					"seed": 7443825,
 					"gridTiles": [],
-					"entityInstances": [{ "__identifier": "Player", "__grid": [0,6], "__tile": null, "defUid": 6, "px": [0,96], "fieldInstances": [{ "__identifier": "health", "__value": 3, "__type": "Int", "defUid": 7, "realEditorValues": [] }] }]
+					"entityInstances": [{ "__identifier": "Player", "__grid": [0,5], "__tile": null, "defUid": 6, "px": [0,80], "fieldInstances": [{ "__identifier": "health", "__value": 3, "__type": "Int", "defUid": 7, "realEditorValues": [] }] }]
 				},
 				{
 					"__identifier": "Enemies",
@@ -1719,7 +1716,7 @@
 					"autoLayerTiles": [],
 					"seed": 2726447,
 					"gridTiles": [],
-					"entityInstances": [{ "__identifier": "Player", "__grid": [0,7], "__tile": null, "defUid": 6, "px": [0,112], "fieldInstances": [{ "__identifier": "health", "__value": 3, "__type": "Int", "defUid": 7, "realEditorValues": [] }] }]
+					"entityInstances": [{ "__identifier": "Player", "__grid": [0,6], "__tile": null, "defUid": 6, "px": [0,96], "fieldInstances": [{ "__identifier": "health", "__value": 3, "__type": "Int", "defUid": 7, "realEditorValues": [] }] }]
 				},
 				{
 					"__identifier": "Enemies",

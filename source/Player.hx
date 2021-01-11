@@ -117,7 +117,6 @@ class Player extends Entity {
 		if (up || down || left || right) {
 			var newAngle:Float = 0;
 			if (up && velocity.y <= 10 && !isJumping) {
-				trace('Jumped');
 				allowCollisions = FlxObject.NONE;
 
 				isJumping = true;

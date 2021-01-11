@@ -11,7 +11,7 @@ class PlayState extends LevelState {
 	}
 
 	override public function setLevelTime() {
-		levelTime = 120.0;
+		levelTime = 60.0;
 	}
 
 	override public function update(elapsed:Float) {

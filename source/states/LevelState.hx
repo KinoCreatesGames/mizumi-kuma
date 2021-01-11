@@ -26,6 +26,7 @@ class LevelState extends FlxState {
 	public var goalGrp:FlxTypedGroup<FlxSprite>;
 	public var decorationGrp:FlxTypedGroup<FlxTilemap>;
 	public var startPosition:FlxPoint;
+	public var completeLevel:Bool;
 	// We need to create this because a TiledMap is just there to hold data
 	public var level:FlxTilemap;
 	public var levelTime:Float;
@@ -34,6 +35,7 @@ class LevelState extends FlxState {
 
 	override public function create() {
 		super.create();
+		completeLevel = false;
 		levelScore = 0;
 		setLevelTime();
 		FlxG.mouse.visible = false;
@@ -252,7 +254,9 @@ class LevelState extends FlxState {
 		};
 
 		FlxG.overlap(player, enemyGrp, playerTouchEnemy);
-		FlxG.overlap(player, goalGrp, playerTouchGoal);
+		if (completeLevel != true) {
+			FlxG.overlap(player, goalGrp, playerTouchGoal);
+		}
 		FlxG.overlap(playerBulletGrp, enemyGrp, playerBulletTouchEnemy);
 	}
 
@@ -305,8 +309,10 @@ class LevelState extends FlxState {
 		// Update High Score
 		var timeBonus = Math.floor(levelTime) * Globals.TIME_BONUS;
 		levelScore += timeBonus;
+		trace(timeBonus);
 		Globals.updateHighScore(timeBonus);
 		playerHUD.updateLevelScore();
+		completeLevel = true;
 	}
 
 	public function enemyCollisions() {

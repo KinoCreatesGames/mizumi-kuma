@@ -7,7 +7,7 @@ class LevelThreeState extends LevelState {
 	}
 
 	override public function setLevelTime() {
-		levelTime = 120.0;
+		levelTime = 50.0;
 	}
 
 	override public function update(elapsed:Float) {

@@ -7,7 +7,7 @@ class LevelTwoState extends LevelState {
 	}
 
 	override public function setLevelTime() {
-		levelTime = 180.0;
+		levelTime = 60.0;
 	}
 
 	override public function playerTouchGoal(player:Player, goal:FlxSprite) {
