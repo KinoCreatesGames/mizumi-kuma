@@ -143,31 +143,40 @@ class LevelState extends FlxState {
 
 	public function placeEnemies(tObj:TiledObject) {
 		var health:Int = cast tObj.properties.get('health');
-		var patrolOne = tObj.properties.get('patrol_0')
-			.split(",")
-			.map(Std.parseFloat)
-			.map(f -> (f + 1) * map.tileWidth);
-		var patrolTwo = tObj.properties.get('patrol_1')
-			.split(",")
-			.map(Std.parseFloat)
-			.map(f -> (f + 1) * map.tileWidth);
-		var monsterData:Monster = {
-			health: health,
-			patrol: [
-				new FlxPoint(patrolOne[0], patrolOne[1]),
-				new FlxPoint(patrolTwo[0], patrolTwo[1])
-			]
-		};
+		var name = tObj.name;
+
 		var enemy:Enemy = null;
-		if (Std.isOfType(enemy, Patroller)) {
+		trace(name);
+		if (name == 'Grump') {
+			var patrolOne = tObj.properties.get('patrol_0')
+				.split(",")
+				.map(Std.parseFloat)
+				.map(f -> (f + 1) * map.tileWidth);
+			var patrolTwo = tObj.properties.get('patrol_1')
+				.split(",")
+				.map(Std.parseFloat)
+				.map(f -> (f + 1) * map.tileWidth);
+			var monsterData:Monster = {
+				health: health,
+				patrol: [
+					new FlxPoint(patrolOne[0], patrolOne[1]),
+					new FlxPoint(patrolTwo[0], patrolTwo[1])
+				]
+			};
 			enemy = new Patroller(tObj.x, tObj.y, monsterData);
 		}
-		if (Std.isOfType(enemy, Charger)) {
+		if (name == 'Charger') {
+			var monsterData:Monster = {
+				health: health,
+				patrol: []
+			};
 			enemy = new Charger(tObj.x, tObj.y, monsterData);
 		}
 
 		// enemy.makeGraphic(tObj.width, tObj.height, FlxColor.RED);
-		enemyGrp.add(enemy);
+		if (enemy != null) {
+			enemyGrp.add(enemy);
+		}
 	}
 
 	override public function update(elapsed:Float) {
@@ -295,6 +304,7 @@ class LevelState extends FlxState {
 		// Update High Score
 		var timeBonus = Math.floor(levelTime) * Globals.TIME_BONUS;
 		Globals.updateHighScore(timeBonus);
+		playerHUD.updateLevelScore();
 	}
 
 	public function enemyCollisions() {
