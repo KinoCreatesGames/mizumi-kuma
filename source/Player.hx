@@ -37,7 +37,7 @@ class Player extends Entity {
 		super.update(elapsed);
 
 		updateCollision(elapsed);
-		updateFire(elapsed);
+		// updateFire(elapsed);
 		updateMovement(elapsed);
 	}
 
@@ -132,7 +132,7 @@ class Player extends Entity {
 				acceleration.x += SPEED;
 			}
 
-			// this.bound();
+			this.bound();
 		}
 	}
 }

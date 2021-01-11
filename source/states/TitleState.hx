@@ -32,8 +32,7 @@ class TitleState extends FlxState {
 		var controlsText = new FlxText(20, FlxG.height - 100, textWidth,
 			'How To Move:
 UP: W/UP
-Left/Right: A/Left, S/Right
-Shoot: Z', textSize);
+Left/Right: A/Left, S/Right', textSize);
 		add(controlsText);
 	}
 

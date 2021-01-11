@@ -24,11 +24,14 @@ class LevelState extends FlxState {
 	public var playerBulletGrp:FlxTypedGroup<Bullet>;
 	public var tileGrp:FlxTypedGroup<FlxSprite>;
 	public var goalGrp:FlxTypedGroup<FlxSprite>;
+
+	public var levelGrp:FlxTypedGroup<FlxTilemap>;
 	public var decorationGrp:FlxTypedGroup<FlxTilemap>;
 	public var startPosition:FlxPoint;
 	public var completeLevel:Bool;
+
 	// We need to create this because a TiledMap is just there to hold data
-	public var level:FlxTilemap;
+	public var initialLevelTime:Float;
 	public var levelTime:Float;
 	public var levelScore:Int;
 	public var player:Player;
@@ -38,6 +41,7 @@ class LevelState extends FlxState {
 		completeLevel = false;
 		levelScore = 0;
 		setLevelTime();
+		initialLevelTime = levelTime;
 		FlxG.mouse.visible = false;
 	}
 
@@ -54,7 +58,8 @@ class LevelState extends FlxState {
 		final tileLayer:TiledTileLayer = cast(map.getLayer('Floor'));
 
 		// Create Groups And Level
-		level = new FlxTilemap();
+		// level = new FlxTilemap();
+		levelGrp = new FlxTypedGroup<FlxTilemap>();
 		decorationGrp = new FlxTypedGroup<FlxTilemap>();
 		tileGrp = new FlxTypedGroup<FlxSprite>();
 		enemyGrp = new FlxTypedGroup<Enemy>();
@@ -62,6 +67,7 @@ class LevelState extends FlxState {
 		playerBulletGrp = new FlxTypedGroup<Bullet>(50);
 		goalGrp = new FlxTypedGroup<FlxSprite>();
 
+		add(levelGrp);
 		add(decorationGrp);
 		add(enemyGrp);
 		add(playerGrp);
@@ -80,20 +86,41 @@ class LevelState extends FlxState {
 	// Gets the Tiled Image Data from the level layer and creates a level
 	// This uses the Ldtk tileD export
 	public function createLevelMap(tileLayer:TiledTileLayer) {
-		// This one did not work because the tiled asset data is not cached by Flixel
+		createLevelLayers();
+		createDecorationLayers();
+	}
+
+	public function createLevelLayers() {
+		// Gets the Tiled Image Data from the level layer and creates a level
+		// This uses the Ldtk tileD export
 		var tileset:TiledTileSet = map.getTileSet('Dungeon_tiles');
 		// This works because it has an ID given by Flixel
 		var tilesetPath = AssetPaths.monochrome_kenney__png;
-		final tileLayer:TiledTileLayer = cast(map.getLayer('Floor'));
+		var floorLayerPrefix = "Floor_";
+		var tileLayer:TiledTileLayer = null;
+		tileLayer = cast(map.getLayer('Floor'));
+
+		if (tileLayer == null) {
+			for (i in 0...map.layers.length) {
+				var tileLayer:TiledTileLayer = cast(map.getLayer(floorLayerPrefix
+					+ i));
+
+				if (tileLayer != null) {
+					addLevelToGrp(tileLayer, tilesetPath, tileset);
+				}
+			}
+		} else {
+			addLevelToGrp(tileLayer, tilesetPath, tileset);
+		}
+	}
+
+	public function addLevelToGrp(tileLayer:TiledTileLayer,
+			tilesetPath:String, tileset:TiledTileSet) {
+		var level = new FlxTilemap();
 		level.loadMapFromArray(tileLayer.tileArray, map.width, map.height,
 			tilesetPath, map.tileWidth, map.tileHeight,
 			FlxTilemapAutoTiling.OFF, tileset.firstGID, 1);
-
-		// for (tile in tileLayer.tileArray) {
-		// 	level.setTileProperties(tile, FlxObject.FLOOR);
-		// }
-		add(level);
-		createDecorationLayers();
+		levelGrp.add(level);
 	}
 
 	public function createDecorationLayers() {
@@ -226,6 +253,7 @@ class LevelState extends FlxState {
 			// Process Restart If Player Runs Out Of Time
 			player.health -= 1;
 			player.setPosition(startPosition.x, startPosition.y);
+			levelTime = initialLevelTime;
 		}
 	}
 
@@ -249,14 +277,12 @@ class LevelState extends FlxState {
 	}
 
 	public function playerCollisions() {
-		if (FlxG.collide(player, level)) {
+		if (FlxG.collide(player, levelGrp)) {
 			player.isJumping = false;
 		};
 
 		FlxG.overlap(player, enemyGrp, playerTouchEnemy);
-		if (completeLevel != true) {
-			FlxG.overlap(player, goalGrp, playerTouchGoal);
-		}
+		FlxG.overlap(player, goalGrp, playerTouchGoal);
 		FlxG.overlap(playerBulletGrp, enemyGrp, playerBulletTouchEnemy);
 	}
 
@@ -311,12 +337,12 @@ class LevelState extends FlxState {
 		levelScore += timeBonus;
 		trace(timeBonus);
 		Globals.updateHighScore(timeBonus);
+		goal.allowCollisions = FlxObject.NONE;
 		playerHUD.updateLevelScore();
-		completeLevel = true;
 	}
 
 	public function enemyCollisions() {
-		FlxG.collide(enemyGrp, level);
+		FlxG.collide(enemyGrp, levelGrp);
 		// FlxG.overlap(enemyGrp, player, enemyTouchPlayer);
 	}
 
