@@ -14,6 +14,6 @@ class LevelFinalState extends LevelState {
 		// Open Next Level
 		super.playerTouchGoal(player, goal);
 		// trace(FlxG.camera.width, FlxG.camera.height);
-		openSubState(new WinSubState(null, new LevelTwoState()));
+		openSubState(new WinSubState(null, new TitleState()));
 	}
 }

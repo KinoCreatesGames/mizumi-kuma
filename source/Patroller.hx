@@ -4,7 +4,7 @@ import flixel.math.FlxVector;
 import Types.Monster;
 
 class Patroller extends Enemy {
-	public static inline var WAIT_TIME:Float = 5.0;
+	public static inline var WAIT_TIME:Float = 3.5;
 	public static inline var SPEED:Float = 75;
 
 	var waitTime:Float;

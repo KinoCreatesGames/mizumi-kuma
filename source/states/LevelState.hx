@@ -221,7 +221,7 @@ class LevelState extends FlxState {
 	}
 
 	public function updatePlayerAlive() {
-		if (player.y > FlxG.height) {
+		if (player.y > (FlxG.height - 300)) {
 			playerTakeDamage();
 			player.setPosition(startPosition.x, startPosition.y);
 		}
@@ -233,7 +233,7 @@ class LevelState extends FlxState {
 				var charger:Charger = cast member;
 				charger.playerPosition = player.getMidpoint();
 				if (charger.getMidpoint()
-					.distanceTo(charger.playerPosition) < 50) {
+					.distanceTo(charger.playerPosition) < 70) {
 					charger.seesPlayer = true;
 				} else {
 					charger.seesPlayer = false;

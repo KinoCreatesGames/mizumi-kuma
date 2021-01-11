@@ -32,6 +32,16 @@ class Charger extends Enemy {
 		super.update(elapsed);
 	}
 
+	override public function updateAnim() {
+		if (!alive) {
+			animation.play(DEATH);
+		} else if (ai.currentState == charge) {
+			animation.play(MOVE);
+		} else if (ai.currentState == idle) {
+			animation.play(IDLE);
+		}
+	}
+
 	public function idle(elapsed:Float) {
 		if (seesPlayer) {
 			ai.currentState = charge;
@@ -43,8 +53,11 @@ class Charger extends Enemy {
 			ai.currentState = idle;
 		} else {
 			var vec:FlxVector = getMidpoint().copyTo(new FlxVector(0, 0));
-			var result = vec.subtractPoint(playerPosition);
+			var playerVec:FlxVector = playerPosition.copyTo(new FlxVector(0,
+				0));
+			var result = playerVec.subtractPoint(vec);
 			var direction = result.normalize();
+			// trace(direction.x);
 			acceleration.x += SPEED * direction.x;
 		}
 	}
