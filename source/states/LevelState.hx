@@ -34,6 +34,7 @@ class LevelState extends FlxState {
 
 	override public function create() {
 		super.create();
+		levelScore = 0;
 		setLevelTime();
 		FlxG.mouse.visible = false;
 	}
@@ -303,6 +304,7 @@ class LevelState extends FlxState {
 		FlxG.camera.setSize(FlxG.width, FlxG.height);
 		// Update High Score
 		var timeBonus = Math.floor(levelTime) * Globals.TIME_BONUS;
+		levelScore += timeBonus;
 		Globals.updateHighScore(timeBonus);
 		playerHUD.updateLevelScore();
 	}
